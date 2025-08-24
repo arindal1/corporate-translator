@@ -9,11 +9,11 @@ export const metadata = {
   openGraph: {
     title: 'Corporate Translator',
     description: 'Simple text processing system for corporate communication enhancement. Transform casual language into professional corporate correspondence.',
-    url: 'https://mycoolapp.com',
+    url: 'https://corporate-translator-liard.vercel.app/',
     siteName: 'Corporate Translator',
     images: [
       {
-        url: 'public/image.png',
+        url: '/image.png',
         width: 1200,
         height: 630,
         alt: 'Corporate Translator preview',
@@ -26,7 +26,7 @@ export const metadata = {
     card: 'summary_large_image',
     title: 'Corporate Translator',
     description: 'Simple text processing system for corporate communication enhancement. Transform casual language into professional corporate correspondence.',
-    images: ['public/image.png'],
+    images: ['/image.png'],
   },
 }
 
@@ -37,7 +37,7 @@ export default function RootLayout({ children }) {
       <head>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta name="theme-color" content="#0a0f1a" />
-        <link rel="icon" type="image/svg+xml" href="public/ct.png"/>
+        <link rel="icon" type="image/svg+xml" href="/ct.png"/>
       </head>
       <body className="min-h-screen font-terminal antialiased">
         {/* CRT Monitor Frame Effect */}

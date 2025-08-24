@@ -91,7 +91,7 @@ export default function Header() {
           {/* Social Links */}
           <div className="flex items-center gap-2">
             <Link 
-              href="https://github.com" 
+              href="https://github.com/arindal1/corporate-translator" 
               target="_blank"
               aria-label="GitHub Repository" 
               className="retro-btn p-2 hover:scale-110 transition-transform"
@@ -99,7 +99,7 @@ export default function Header() {
               <Github className="w-4 h-4" />
             </Link>
             <Link 
-              href="https://linkedin.com" 
+              href="https://linkedin.com/in/arindalchar" 
               target="_blank"
               aria-label="LinkedIn Profile" 
               className="retro-btn p-2 hover:scale-110 transition-transform"
