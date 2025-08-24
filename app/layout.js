@@ -3,6 +3,11 @@ import './globals.css'
 export const metadata = {
   title: 'Corporate Translator',
   description: 'Simple text processing system for corporate communication enhancement. Transform casual language into professional corporate correspondence.',
+  icons: {
+      icon: '/ct.png',
+      shortcut: '/ct.png',
+      apple: '/ct.png',
+  },
   keywords: 'corporate, converter, professional, business, communication, retro, terminal',
   authors: [{ name: 'arindal1' }],
   viewport: 'width=device-width, initial-scale=1',
