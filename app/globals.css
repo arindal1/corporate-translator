@@ -1,26 +1,620 @@
+/* app/globals.css - Enhanced Retro UI with fixes */
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/* Retro pixel fonts */
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500&display=swap');
+
+/* ---------- Theme variables ---------- */
+:root{
+  --retro-grid: rgba(0,255,136,0.03);
+  --bg-0: #0a0f1a;
+  --bg-1: #020408;
+  --card-border: rgba(0,255,136,0.1);
+  --muted: rgba(0,255,136,0.7);
+  --accent: #00ff88;
+  --accent-dim: #00cc66;
+  --warning: #ffaa00;
+  --error: #ff4444;
+  --terminal-green: #00ff41;
+  --neon-blue: #00d4ff;
+  --neon-purple: #aa44ff;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* ---------- Base page styles ---------- */
+html,body,#__next{
+  height: 100%;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  min-height: 100%;
+  margin: 0;
+  padding: 0;
+  background:
+    radial-gradient(ellipse at top left, rgba(0,255,136,0.05), transparent 30%),
+    radial-gradient(ellipse at bottom right, rgba(0,212,255,0.03), transparent 25%),
+    linear-gradient(180deg, var(--bg-0) 0%, var(--bg-1) 100%);
+  color: #e6eef6;
+  font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, monospace;
+  position: relative;
+  overflow-y: auto;
+  animation: subtle-flicker 4s ease-in-out infinite;
+}
+
+/* Retro terminal font */
+.font-retro {
+  font-family: 'Press Start 2P', ui-monospace, SFMono-Regular, monospace;
+  text-shadow: 0 0 5px currentColor;
+}
+
+.font-terminal {
+  font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, monospace;
+  font-weight: 400;
+}
+
+/* ---------- CRT Effects ---------- */
+.crt-container {
+  position: relative;
+  overflow: hidden;
+  background: rgba(0,0,0,0.2);
+  border-radius: 12px;
+}
+
+/* Enhanced scanlines */
+.crt-container::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0,0,0,0.15) 2px,
+    rgba(0,0,0,0.15) 4px
+  );
+  animation: scanlines 0.1s linear infinite;
+  z-index: 10;
+}
+
+/* Subtle grid overlay */
+.crt-container::after{
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(90deg, var(--retro-grid) 1px, transparent 1px),
+    linear-gradient(0deg, var(--retro-grid) 1px, transparent 1px);
+  background-size: 20px 20px;
+  opacity: 0.3;
+  animation: grid-drift 8s linear infinite;
+}
+
+/* ---------- Enhanced Cards ---------- */
+.retro-card {
+  position: relative;
+  background: 
+    linear-gradient(135deg, rgba(0,255,136,0.02), rgba(0,212,255,0.01)),
+    linear-gradient(180deg, rgba(255,255,255,0.01), transparent);
+  border: 1px solid var(--card-border);
+  box-shadow: 
+    0 0 20px rgba(0,255,136,0.1),
+    0 8px 32px rgba(0,0,0,0.6),
+    inset 0 1px 0 rgba(255,255,255,0.05);
+  border-radius: 16px;
+  backdrop-filter: blur(4px);
+  transition: all 0.3s ease;
+}
+
+.retro-card:hover {
+  border-color: rgba(0,255,136,0.2);
+  box-shadow: 
+    0 0 30px rgba(0,255,136,0.15),
+    0 12px 48px rgba(0,0,0,0.8),
+    inset 0 1px 0 rgba(255,255,255,0.1);
+  transform: translateY(-2px);
+}
+
+/* Glowing highlight effect - fixed z-index conflict */
+.retro-card::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 40%;
+  pointer-events: none;
+  background: linear-gradient(180deg, rgba(0,255,136,0.03), transparent 70%);
+  border-radius: inherit;
+  animation: glow-pulse 3s ease-in-out infinite;
+  z-index: 1;
+}
+
+/* Ensure card content appears above the glow */
+.retro-card > * {
+  position: relative;
+  z-index: 2;
+}
+
+/* ---------- Glitch Effects ---------- */
+.glitch {
+  position: relative;
+  display: inline-block;
+}
+
+.glitch::before,
+.glitch::after {
+  content: attr(data-text);
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0.8;
+  animation: glitch 0.3s infinite;
+}
+
+.glitch::before {
+  color: var(--neon-blue);
+  z-index: -1;
+  animation-delay: 0s;
+  clip-path: polygon(0 0, 100% 0, 100% 35%, 0 35%);
+}
+
+.glitch::after {
+  color: var(--error);
+  z-index: -2;
+  animation-delay: 0.1s;
+  clip-path: polygon(0 65%, 100% 65%, 100% 100%, 0 100%);
+}
+
+/* ---------- Terminal-style inputs ---------- */
+textarea.terminal-input,
+.terminal-input {
+  background: rgba(0,0,0,0.8);
+  color: var(--terminal-green);
+  border: 1px solid rgba(0,255,136,0.2);
+  border-radius: 8px;
+  padding: 1rem;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  resize: vertical;
+  min-height: 8rem;
+  text-shadow: 0 0 3px currentColor;
+  transition: all 0.2s ease;
+  width: 100%;
+  box-sizing: border-box;
+  caret-color: var(--terminal-green); /* make caret glow green */
+  caret-shape: block;
+}
+
+.terminal-input:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 15px rgba(0,255,136,0.3);
+  background: rgba(0,0,0,0.9);
+}
+
+.terminal-input::placeholder {
+  color: rgba(0,255,136,0.4);
+  opacity: 1;
+}
+
+.terminal-input::selection {
+  background: rgba(0,255,136,0.3);
+  color: white;
+}
+
+.terminal-input:focus::after {
+  content: '█';
+  position: absolute;
+  font-size: 1rem;
+  line-height: 1;
+  color: var(--terminal-green);
+  animation: blink 1s steps(2, start) infinite;
+  pointer-events: none;
+  
+  /* Position near the caret */
+  /* ⚠️ limitation: CSS can’t follow the actual caret dynamically */
+  /* Instead, we overlay and rely on caret-shape (Firefox) OR just thicker caret in supported browsers */
+}
+
+
+/* ---------- Enhanced Buttons ---------- */
+.retro-btn {
+  position: relative;
+  background: linear-gradient(135deg, rgba(0,255,136,0.1), rgba(0,212,255,0.05));
+  border: 1px solid var(--accent-dim);
+  color: var(--accent);
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  transition: all 0.2s ease;
+  overflow: hidden;
+  text-shadow: 0 0 5px currentColor;
+  box-shadow: 0 4px 15px rgba(0,255,136,0.2);
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.retro-btn:hover:not(:disabled) {
+  background: linear-gradient(135deg, rgba(0,255,136,0.2), rgba(0,212,255,0.1));
+  border-color: var(--accent);
+  box-shadow: 0 6px 25px rgba(0,255,136,0.4);
+  transform: translateY(-2px);
+}
+
+.retro-btn:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 10px rgba(0,255,136,0.3);
+}
+
+.retro-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none !important;
+  box-shadow: 0 2px 8px rgba(0,255,136,0.1);
+}
+
+/* Button glow effect */
+.retro-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+  transition: left 0.5s;
+}
+
+.retro-btn:hover::before {
+  left: 100%;
+}
+
+/* ---------- Loading Effects ---------- */
+.matrix-rain {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  overflow: hidden;
+  opacity: 0.1;
+  z-index: 1;
+}
+
+.matrix-char {
+  position: absolute;
+  color: var(--terminal-green);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  animation: rain 3s linear infinite;
+}
+
+.enhanced-loading {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--terminal-green);
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.loading-dots::after {
+  content: '';
+  animation: dots 1.5s steps(4, end) infinite;
+}
+
+/* Progress bar with glitch - fixed positioning */
+.glitch-progress {
+  position: relative;
+  width: 100%;
+  height: 8px;
+  background: rgba(0,0,0,0.6);
+  border: 1px solid var(--accent-dim);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.glitch-progress > div {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent), var(--neon-blue));
+  border-radius: 3px;
+  transition: width 0.3s ease;
+}
+
+/* ---------- Noise and Static Effects ---------- */
+.static-noise {
+  position: relative;
+}
+
+.static-noise::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='1' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.1'/%3E%3C/svg%3E");
+  pointer-events: none;
+  opacity: 0.3;
+  animation: noise 0.2s infinite;
+  z-index: 1;
+}
+
+/* ---------- Status Indicators ---------- */
+.status-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  margin-right: 8px;
+  animation: pulse-dot 2s ease-in-out infinite;
+  flex-shrink: 0;
+}
+
+.status-online { 
+  background: var(--accent); 
+  box-shadow: 0 0 8px var(--accent); 
+}
+
+.status-processing { 
+  background: var(--warning); 
+  box-shadow: 0 0 8px var(--warning); 
+}
+
+.status-error { 
+  background: var(--error); 
+  box-shadow: 0 0 8px var(--error); 
+}
+
+/* ---------- Retro Badge ---------- */
+.retro-badge {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 8px;
+  padding: 4px 8px;
+  border-radius: 4px;
+  letter-spacing: 0.5px;
+  background: linear-gradient(45deg, var(--accent-dim), var(--neon-blue));
+  color: var(--bg-1);
+  text-shadow: none;
+  box-shadow: 0 2px 10px rgba(0,255,136,0.3);
+  flex-shrink: 0;
+}
+
+/* ---------- Fixed Layout Issues ---------- */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+/* Improved responsive header */
+header.retro-card {
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+@media (max-width: 768px) {
+  header.retro-card {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  header .flex:last-child {
+    align-self: flex-end;
+  }
+}
+
+/* Fixed status bar alignment */
+.status-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+@media (max-width: 1024px) {
+  .status-bar {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .status-bar > div {
+    width: 100%;
+    justify-content: space-between;
+  }
+}
+
+/* Improved card grid */
+.info-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1rem;
+}
+
+
+/* ---------- Animations ---------- */
+@keyframes subtle-flicker {
+  0%, 98%, 100% { opacity: 1; }
+  99% { opacity: 0.98; }
+}
+
+@keyframes scanlines {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(4px); }
+}
+
+@keyframes grid-drift {
+  0% { transform: translate(0, 0); }
+  100% { transform: translate(20px, 20px); }
+}
+
+@keyframes glow-pulse {
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 0.6; }
+}
+
+@keyframes glitch {
+  0%, 90%, 100% { transform: translateX(0); }
+  10% { transform: translateX(-2px); }
+  20% { transform: translateX(2px); }
+  30% { transform: translateX(-1px); }
+  40% { transform: translateX(1px); }
+  50% { transform: translateX(-2px); }
+  60% { transform: translateX(2px); }
+  70% { transform: translateX(-1px); }
+  80% { transform: translateX(1px); }
+}
+
+@keyframes blink {
+  0%, 50% { opacity: 1; }
+  51%, 100% { opacity: 0; }
+}
+
+@keyframes rain {
+  0% { transform: translateY(-100px); opacity: 1; }
+  100% { transform: translateY(100vh); opacity: 0; }
+}
+
+@keyframes dots {
+  0% { content: ''; }
+  25% { content: '.'; }
+  50% { content: '..'; }
+  75% { content: '...'; }
+  100% { content: ''; }
+}
+
+@keyframes noise {
+  0%, 100% { opacity: 0.02; }
+  50% { opacity: 0.06; }
+}
+
+@keyframes pulse-dot {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.2); opacity: 0.7; }
+}
+
+/* Retro shimmer effect */
+.retro-shimmer {
+  position: relative;
+  overflow: hidden;
+}
+
+.retro-shimmer::after{
+  content: '';
+  position: absolute;
+  inset: 0;
+  transform: translateX(-110%) skewX(-10deg);
+  background: linear-gradient(90deg, transparent, rgba(0,255,136,0.1), transparent);
+  animation: shimmer 3s linear infinite;
+  pointer-events: none;
+}
+
+@keyframes shimmer {
+  0% { transform: translateX(-110%) skewX(-10deg); }
+  100% { transform: translateX(110%) skewX(-10deg); }
+}
+
+/* ---------- Responsive tweaks ---------- */
+@media (max-width: 640px) {
+  .retro-badge { font-size: 6px; padding: 3px 6px; }
+  .retro-btn { font-size: 8px; padding: 0.5rem 1rem; }
+  .glitch-progress { width: 100%; }
+  
+  .font-retro {
+    font-size: 10px;
+  }
+  
+  .terminal-input {
+    font-size: 14px;
+    padding: 0.75rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .retro-card {
+    padding: 1rem !important;
+    margin: 0.5rem 0;
+  }
+  
+  .font-terminal {
+    font-size: 12px;
+  }
+}
+
+/* ---------- Utility classes ---------- */
+.text-terminal { color: var(--terminal-green); }
+.text-neon-blue { color: var(--neon-blue); }
+.text-neon-purple { color: var(--neon-purple); }
+.border-terminal { border-color: var(--terminal-green); }
+
+/* Terminal-style selection */
+::selection {
+  background: rgba(0,255,136,0.3);
+  color: white;
+}
+
+/* Accessibility improvements */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Fix for layout shifts */
+/* Converter interface keeps constant height and overlays phases */
+.converter-interface {
+  position: relative;
+  min-height: 430px; /* keep enough height for the tallest phase */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden; /* hide non-active phases */
+}
+
+/* Boot screen hydration fix */
+.boot-screen-initial .boot-progress {
+  width: 0% !important;
+}
+
+/* Smooth transitions between states */
+.interface-transition {
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Better button spacing */
+.button-group {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+@media (max-width: 480px) {
+  .button-group {
+    width: 100%;
+    justify-content: stretch;
+  }
+  
+  .button-group .retro-btn {
+    flex: 1;
+    min-width: 0;
+  }
 }
