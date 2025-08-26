@@ -1,6 +1,6 @@
 # Corporate Translator 🖥️⚡
 
-A retro-themed **text conversion tool** that transforms casual English into polished, professional corporate communication.
+A **text conversion tool** that transforms casual English into polished, professional corporate communication.
 Built with **Next.js** and styled with **TailwindCSS**, a retro CRT-terminal aesthetic.
 
 <br>
